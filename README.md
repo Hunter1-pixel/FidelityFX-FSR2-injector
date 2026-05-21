@@ -10,24 +10,29 @@ The goal is to explore upscaling for apps and games that do not natively support
 - It can launch an app and inject a DLL.
 - It can attach to a running process by PID and inject a DLL.
 - It checks for basic 32-bit/64-bit architecture mismatches.
+- `fsr2_reshade_bridge` adds a ReShade add-on bridge scaffold.
+- `Fsr1SpatialUpscale.fx` adds a first spatial upscaling/sharpening effect for generic apps.
 
 The injector code is here:
 
 [tools/fsr2_injector](tools/fsr2_injector)
 
+The ReShade bridge and upscaler are here:
+
+[tools/reshade_bridge](tools/reshade_bridge)
+
 ## What Does Not Work Yet
 
-The project does not yet include the graphics bridge DLL that performs upscaling.
+The project now includes a ReShade bridge scaffold and a first spatial effect, but it is not full FSR2 for every app yet.
 
 FSR2 normally needs data from the game engine, including motion vectors, depth, exposure, jitter, and frame timing. Apps that do not support FSR2 do not usually expose that data, so a universal injector needs a separate graphics hook layer.
 
 The realistic path is:
 
-1. Use the injector to load a bridge DLL.
-2. Hook DirectX/Vulkan presentation.
-3. Capture the app frame.
-4. Start with spatial upscaling/sharpening for generic apps.
-5. Add fuller FSR2 support only when enough game data is available.
+1. Use ReShade add-on support as the graphics bridge.
+2. Run `Fsr1SpatialUpscale.fx` for generic spatial upscale/sharpen.
+3. Use the bridge add-on to experiment with forced swap-chain sizing.
+4. Add fuller FSR2 support only when enough game data is available.
 
 More detail is in:
 
@@ -53,6 +58,23 @@ build\fsr2_injector_standalone\bin\fsr2injectord.exe
 ```
 
 If `cmake` is not found after installing it, restart Windows or open a fresh Visual Studio Developer PowerShell.
+
+## Build The ReShade Bridge
+
+The bridge needs ReShade's add-on headers. Clone or download ReShade, then pass its `include` folder to CMake:
+
+```powershell
+cmake -S tools\reshade_bridge -B build\reshade_bridge -DRESHADE_INCLUDE_DIR=C:\path\to\reshade\include
+cmake --build build\reshade_bridge --config Release
+```
+
+Install ReShade's add-on support build into the target app, copy the built `.addon64` file next to the app executable, and copy:
+
+```text
+tools\reshade_bridge\shaders\Fsr1SpatialUpscale.fx
+```
+
+into the app's `reshade-shaders\Shaders` folder.
 
 ## Usage
 

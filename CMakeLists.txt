@@ -90,4 +90,5 @@ if(GFX_API_DX12)
 endif()
 
 add_subdirectory(tools/fsr2_injector)
+add_subdirectory(tools/reshade_bridge)
 
