@@ -37,12 +37,22 @@ More detail is in:
 
 You need Visual Studio with the C++ desktop workload and CMake tools installed.
 
-From a Visual Studio Developer PowerShell:
+This was tested with Visual Studio 2022 Build Tools and CMake 4.3.2.
+
+From a Visual Studio Developer PowerShell, run:
 
 ```powershell
 cmake -S tools\fsr2_injector -B build\fsr2_injector_standalone
 cmake --build build\fsr2_injector_standalone --config Release
 ```
+
+The standalone build writes the executable to:
+
+```text
+build\fsr2_injector_standalone\bin\fsr2injectord.exe
+```
+
+If `cmake` is not found after installing it, restart Windows or open a fresh Visual Studio Developer PowerShell.
 
 ## Usage
 
